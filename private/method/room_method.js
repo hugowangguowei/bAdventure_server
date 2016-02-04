@@ -1,5 +1,6 @@
 /**
- * Created by wangguowei on 2001/1/11.
+ * Created by wangguowei on 2016/2/1.
+ * 包含了对房间对象集合的操作
  */
 
 var config = require('./../config');

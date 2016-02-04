@@ -10,6 +10,8 @@ function baRoom(roomID,roomName,maxMem){
     this.maxMemNum = maxMem||2;
     this.roomLeader = 0;
     this.roomMem = [];
+
+    this.roomIsReady = true;
 }
 
 baRoom.prototype = {

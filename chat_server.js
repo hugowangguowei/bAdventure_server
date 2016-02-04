@@ -58,6 +58,15 @@ io.on('connection',function(_socket){
 
     _socket.on('startGame',function(){
         _startGame(_socket);
+
+        function _startGame(_socket){
+            var chara = config.getCharaBySocketId(_socket.id);
+            if(!userMethod.permissionCheck(chara,"startGame")){
+                return 0;
+            }
+            var room = chara.room;
+            roomMethod.startGame(room);
+        }
     });
 });
 
