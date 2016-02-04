@@ -24,6 +24,7 @@ exports.permissionCheck = function (chara,action) {
 }
 
 exports.intoARoom = function(chara,room){
+    console.log("intoARoomB");
     var roomInitInfo = room.getRoomInitInfo();
     roomInitInfo['yourInfo'] = {
         yourID:chara.userID
@@ -36,7 +37,8 @@ exports.intoARoom = function(chara,room){
         userType = "normalMem";
     }
     roomInitInfo['userType'] = userType;
-    chara.socket.emit('initARoom',roomInitInfo);
+    chara.socket.emit('intoARoom',roomInitInfo);
+    console.log("intoARoomE");
 }
 
 exports.kickUserOutRoom = function(chara){
