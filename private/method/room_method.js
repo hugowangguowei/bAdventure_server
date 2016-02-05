@@ -7,11 +7,16 @@ var config = require('./../config');
 var baRoom = require('./../baRoom');
 var serverMethod = require('./server_method');
 var userMethod = require('./user_method');
+var userManager = require('../../basicFunc/userManager');
+var roomManager = require('../../basicFunc/roomManager');
+
+var uM = new userManager();
+var rM = new roomManager();
 
 exports.buildNewRoom = function (roomInfo,chara) {
-    var roomID = config.getNewRoomID();
+    var roomID = rM.getIdForNewRoom();
     var room = new baRoom(roomID,roomInfo.name,roomInfo.memNum);
-    var roomList = config.getRoomList();
+    var roomList = rM.getRoomList();
     roomList.push(room);
 
     room.addLeader(chara);
@@ -41,7 +46,7 @@ exports.roomRefresh = function(room){
 
 function roomListRefresh(room){
     var info = room.getBriefInfo();
-    var objCharaList = config.getCharasByState(["mainTable","waitingQueue"]);
+    var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
     serverMethod.broadcastToList(objCharaList,'roomListRefresh',info);
 }
 

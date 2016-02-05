@@ -8,8 +8,13 @@ var xssEscape = require('xss-escape');
 var config = require('./private/config');
 var baRoom = require('./private/baRoom');
 var baPlayer = require('./private/baPlayer');
+var roomManager = require('./basicFunc/roomManager');
+var userManager = require('./basicFunc/userManager');
 var roomMethod = require('./private/method/room_method');
 var userMethod = require('./private/method/user_method');
+
+var uM = new userManager();
+var rM = new roomManager();
 
 io.on('connection',function(_socket){
     console.log(_socket.id + ":connected");
@@ -23,9 +28,9 @@ io.on('connection',function(_socket){
         console.log(cd.userName + " get In");
 
         var userName = cd.userName;
-        var userID = config.getNewCharaID();
+        var userID = uM.getIdForNewUser();
         var chara = new baPlayer(userName,userID,_socket);
-        var clientList = config.getCharaList();
+        var clientList = uM.getUserList();
         clientList.push(chara);
         _socket.emit('basicConnectReturn','ok');
         roomMethod.getAllRooms(chara);
@@ -33,8 +38,9 @@ io.on('connection',function(_socket){
 
     _socket.on('createNewRoom', function (roomInfo) {
         console.log("createNewRoom");
-        var chara = config.getCharaBySocketId(_socket.id);
+        var chara = uM.getUserBySocketId(_socket.id);
         if(!chara){
+            //console.log("haha");
             return 0;
         }
         var room = roomMethod.buildNewRoom(roomInfo,chara);
@@ -44,12 +50,12 @@ io.on('connection',function(_socket){
     _socket.on('askGetIntoRoom', function (roomID) {
         console.log("ask get into room");
 
-        var chara = config.getCharaBySocketId(_socket.id);
+        var chara = uM.getUserBySocketId(_socket.id);
         if(!chara){
             throw new Error("can't find a user id like this");
         }
         userMethod.kickUserOutRoom(chara);
-        var room = config.getRoomById(roomID);
+        var room = rM.getRoomById(roomID);
         if(!room){
             return 0;
         }
@@ -60,12 +66,11 @@ io.on('connection',function(_socket){
         _startGame(_socket);
 
         function _startGame(_socket){
-            var chara = config.getCharaBySocketId(_socket.id);
+            var chara = uM.getUserBySocketId(_socket.id);
             if(!userMethod.permissionCheck(chara,"startGame")){
                 return 0;
             }
-            var room = chara.room;
-            roomMethod.startGame(room);
+            //chara.room.startGame();
         }
     });
 });
