@@ -38,12 +38,13 @@ io.on('connection',function(_socket){
 
     _socket.on('createNewRoom', function (roomInfo) {
         console.log("createNewRoom");
+
         var chara = uM.getUserBySocketId(_socket.id);
         if(!chara){
-            //console.log("haha");
             return 0;
         }
-        var room = roomMethod.buildNewRoom(roomInfo,chara);
+
+        var room = rM.addRoom(roomInfo,chara);
         userMethod.intoARoom(chara,room);
     });
 

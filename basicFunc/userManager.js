@@ -1,7 +1,7 @@
 /**
  * Created by wgw on 2016/2/5.
- * ÓÃ»§¹ÜÀí
- * ÀýÈçÐÄÌø¼ì²â
+ * ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 
 module.exports = userManager;
@@ -58,6 +58,7 @@ userManager.prototype = {
         }
         return chosenChara;
     },
+
     start: function () {
         console.log("start useManager");
     },
