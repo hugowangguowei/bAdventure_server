@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+var debug = require('debug')('qx-chat');
+var app = require('../app');
+var roomManager = require('../basicFunc/roomManager');
+var userManager = require('../basicFunc/userManager');
+
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+
+require('../main_server').listen(server);
+

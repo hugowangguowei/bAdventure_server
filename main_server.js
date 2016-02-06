@@ -5,13 +5,13 @@
 var io = require('socket.io')();
 
 var xssEscape = require('xss-escape');
-var config = require('./private/config');
 var baPlayer = require('./private/baPlayer');
 var roomManager = require('./basicFunc/roomManager');
 var userManager = require('./basicFunc/userManager');
 
-var uM = new userManager();
 var rM = new roomManager();
+var uM = new userManager();
+
 
 io.on('connection',function(_socket){
     console.log(_socket.id + ":connected");
@@ -24,43 +24,49 @@ io.on('connection',function(_socket){
     _socket.on('basicConnect',function(cd){
         console.log(cd.userName + " get In");
 
-        var userName = cd.userName;
-        var userID = uM.getIdForNewUser();
-        var chara = new baPlayer(userName,userID,_socket);
-        var clientList = uM.getUserList();
-        clientList.push(chara);
-        _socket.emit('basicConnectReturn','ok');
-        rM.clientRoomInfoInitialize(chara);
+        _basicConnect();
+        function _basicConnect(){
+            var userName = cd.userName;
+            var userID = uM.getIdForNewUser();
+            var chara = new baPlayer(userName,userID,_socket);
+            var clientList = uM.getUserList();
+            clientList.push(chara);
+            _socket.emit('basicConnectReturn','ok');
+            rM.clientRoomInfoInitialize(chara);
+        }
     });
 
     _socket.on('createNewRoom', function (roomInfo) {
         console.log("createNewRoom");
 
-        var chara = uM.getUserBySocketId(_socket.id);
-        if(!chara){
-            return 0;
+        _createNewRoom();
+        function _createNewRoom(){
+            var chara = uM.getUserBySocketId(_socket.id);
+            if(!chara){
+                return 0;
+            }
+            var room = rM.addRoom(roomInfo,chara);
+            uM.sendCurRoomInfo(chara,room);
         }
-
-        var room = rM.addRoom(roomInfo,chara);
-        uM.intoARoom(chara,room);
     });
 
     _socket.on('askGetIntoRoom', function (roomID) {
         console.log("ask get into room");
 
-        var chara = uM.getUserBySocketId(_socket.id);
-        if(!chara){
-            throw new Error("can't find a user id like this");
+        _getIntoRoom();
+        function _getIntoRoom(){
+            var chara = uM.getUserBySocketId(_socket.id);
+            uM.kickUserOutRoom(chara);
+
+            var room = rM.getRoomById(roomID);
+            if(uM.joinTheRoom(chara,room)){
+                rM.roomRefresh(room);
+            }
         }
-        uM.kickUserOutRoom(chara);
-        var room = rM.getRoomById(roomID);
-        if(!room){
-            return 0;
-        }
-        uM.joinTheRoom(chara,room);
     });
 
     _socket.on('startGame',function(){
+        console.log("startGame");
         _startGame(_socket);
 
         function _startGame(_socket){
