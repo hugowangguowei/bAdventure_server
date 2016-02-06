@@ -6,12 +6,9 @@ var io = require('socket.io')();
 
 var xssEscape = require('xss-escape');
 var config = require('./private/config');
-var baRoom = require('./private/baRoom');
 var baPlayer = require('./private/baPlayer');
 var roomManager = require('./basicFunc/roomManager');
 var userManager = require('./basicFunc/userManager');
-var roomMethod = require('./private/method/room_method');
-var userMethod = require('./private/method/user_method');
 
 var uM = new userManager();
 var rM = new roomManager();
@@ -33,7 +30,7 @@ io.on('connection',function(_socket){
         var clientList = uM.getUserList();
         clientList.push(chara);
         _socket.emit('basicConnectReturn','ok');
-        roomMethod.getAllRooms(chara);
+        rM.clientRoomInfoInitialize(chara);
     });
 
     _socket.on('createNewRoom', function (roomInfo) {
@@ -45,7 +42,7 @@ io.on('connection',function(_socket){
         }
 
         var room = rM.addRoom(roomInfo,chara);
-        userMethod.intoARoom(chara,room);
+        uM.intoARoom(chara,room);
     });
 
     _socket.on('askGetIntoRoom', function (roomID) {
@@ -55,12 +52,12 @@ io.on('connection',function(_socket){
         if(!chara){
             throw new Error("can't find a user id like this");
         }
-        userMethod.kickUserOutRoom(chara);
+        uM.kickUserOutRoom(chara);
         var room = rM.getRoomById(roomID);
         if(!room){
             return 0;
         }
-        userMethod.askForJoinTheRoom(room,chara);
+        uM.joinTheRoom(chara,room);
     });
 
     _socket.on('startGame',function(){
@@ -68,10 +65,9 @@ io.on('connection',function(_socket){
 
         function _startGame(_socket){
             var chara = uM.getUserBySocketId(_socket.id);
-            if(!userMethod.permissionCheck(chara,"startGame")){
+            if(!uM.permissionCheck(chara,"startGame")){
                 return 0;
             }
-            //chara.room.startGame();
         }
     });
 });

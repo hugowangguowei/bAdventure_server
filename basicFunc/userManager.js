@@ -1,13 +1,13 @@
 /**
  * Created by wgw on 2016/2/5.
- * �û�����
- * �����������
  */
+var roomManager = require('./roomManager');
 
-module.exports = userManager;
-
+var rM = new roomManager();
 var userIdCount = 0;
 var userList =[];
+
+module.exports = userManager;
 
 function userManager() {
     this.id = "userManager";
@@ -58,7 +58,65 @@ userManager.prototype = {
         }
         return chosenChara;
     },
+    permissionCheck:function(user,action){
+        switch (action){
+            case "startGame":
+                _canStartGame(user);
+                break;
+        }
 
+        function _canStartGame(user){
+            if(!user.room){
+                return false;
+            }
+            var room = user.room;
+            var roomLeader = room.roomLeader;
+            if(roomLeader && roomLeader.userID == user.userID){
+                return true;
+            }
+            return false;
+        }
+    },
+    intoARoom:function(user,room){
+        var roomInitInfo = room.getRoomInitInfo();
+        roomInitInfo['yourInfo'] = {
+            yourID:user.userID
+        }
+
+        var userType;
+        if(room.roomLeader.userID ==user.userID){
+            userType = "leader";
+        }else{
+            userType = "normalMem";
+        }
+        roomInitInfo['userType'] = userType;
+        user.socket.emit('intoARoom',roomInitInfo);
+    },
+    joinTheRoom:function(user,room){
+        var curMemNum = room.roomMem.length;
+        var maxMemNum = room.maxMemNum;
+
+        if(curMemNum >= maxMemNum){
+            return false;
+        }
+
+        room.roomMem.push(user);
+        user.state = "waitingQueue";
+        rM.roomRefresh(room);
+    },
+    kickUserOutRoom:function(user){
+        var room = user.room;
+        if(!room||!room.id){
+            return 0;
+        }
+        var removeResult = room.removeChara(user);
+        if(removeResult){
+            rM.roomRefresh(room);
+        }
+
+        var socket = user.socket;
+        socket.emit("getOutTheRoom");
+    },
     start: function () {
         console.log("start useManager");
     },

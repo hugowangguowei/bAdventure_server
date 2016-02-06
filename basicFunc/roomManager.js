@@ -1,14 +1,13 @@
 /**
  * Created by wgw on 2016/2/6.
- * 房间管理器
  */
 var baRoom = require('../private/baRoom');
-var baPlayer = require('../private/baPlayer');
 var serverMethod = require('../private/method/server_method');
-var userMethod = require('../private/method/user_method');
+var userManager = require('./userManager');
 
 module.exports = roomManager;
 
+var uM = new userManager;
 var roomIdCount = 0;
 var roomList = [];
 var refreshList = {};
@@ -57,12 +56,12 @@ roomManager.prototype = {
     },
     roomMemRefresh:function(room){
         var roomLeader = room.roomLeader;
-        userMethod.intoARoom(roomLeader,room);
+        uM.intoARoom(roomLeader,room);
 
         var roomMemList = room.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
-            userMethod.intoARoom(mem_i,room);
+            uM.intoARoom(mem_i,room);
         }
     },
     clientRoomInfoInitialize: function (user) {
