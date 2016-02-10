@@ -57,11 +57,14 @@ userManager.prototype = {
         return chosenChara;
     },
     permissionCheck:function(user,action){
+        var result = false;
         switch (action){
             case "startGame":
-                _canStartGame(user);
+                result = _canStartGame(user);
                 break;
         }
+
+        return result;
 
         function _canStartGame(user){
             if(!user.room){

@@ -74,6 +74,8 @@ io.on('connection',function(_socket){
             if(!uM.permissionCheck(chara,"startGame")){
                 return 0;
             }
+            var room = chara.room;
+            rM.startGame(room);
         }
     });
 });
