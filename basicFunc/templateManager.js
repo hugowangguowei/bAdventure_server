@@ -5,6 +5,9 @@
 var errManager = require('./errorManager');
 
 var templateList = {};
+var defaultTemplate = {
+
+}
 var eM = new errManager();
 
 module.exports = templateManager;
@@ -25,6 +28,5 @@ templateManager.prototype = {
             eM.uploadError("can't find the template!");
             return 0;
         }
-
     }
 }
