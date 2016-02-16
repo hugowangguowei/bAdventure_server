@@ -13,3 +13,12 @@ function baPlayer(userName,id,socket){
     this.socket = socket;
     this.room = null;
 }
+
+baPlayer.prototype = {
+    getPlayerInfo:function(){
+        return {
+            name:this.userName,
+            level:this.level
+        }
+    }
+}

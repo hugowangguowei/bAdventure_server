@@ -103,17 +103,30 @@ roomManager.prototype = {
      * @param room
      */
     startGame:function(room){
+
+        var memInfo = _getMemInfo(room);
+
         var roomLeader = room.roomLeader;
         var rlSocket = roomLeader.socket;
-        rlSocket.emit("startGame")
+        rlSocket.emit("startGame",memInfo)
 
         var roomMemList = room.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
             var memSocket = mem_i.socket;
-            memSocket.emit("startGame");
+            memSocket.emit("startGame",memInfo);
         }
         console.log("send finished");
 
+        function _getMemInfo(room){
+            var info = [];
+            var roomMemList = room.roomMem;
+            for(var i =0;i< roomMemList.length;i++){
+                var player_i = roomMemList[i];
+                var info_i = player_i.getPlayerInfo();
+                info.push(info_i);
+            }
+            return info;
+        }
     }
 }
