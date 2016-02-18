@@ -18,6 +18,7 @@ baPlayer.prototype = {
     getPlayerInfo:function(){
         return {
             name:this.userName,
+            serverId:this.userID,
             level:this.level
         }
     }
