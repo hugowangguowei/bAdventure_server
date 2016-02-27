@@ -108,13 +108,13 @@ roomManager.prototype = {
 
         var roomLeader = room.roomLeader;
         var rlSocket = roomLeader.socket;
-        rlSocket.emit("startGame",{playerType:"normal",mem:memInfo});
+        rlSocket.emit("startGame",{playerType:"leader",mem:memInfo});
 
         var roomMemList = room.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
             var memSocket = mem_i.socket;
-            memSocket.emit("startGame",{playerType:"leader",mem:memInfo});
+            memSocket.emit("startGame",{playerType:"normal",mem:memInfo});
         }
 
         function _getMemInfo(room){
