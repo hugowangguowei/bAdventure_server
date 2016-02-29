@@ -4,6 +4,8 @@
 
 var userIdCount = 0;
 var userList =[];
+var socket_config = require('../private/socket/socket_config');
+//var CLIENT_MSG_TYPE = socket_config.CLIENT_MSG_TYPE;
 
 module.exports = userManager;
 
@@ -57,7 +59,9 @@ userManager.prototype = {
         return chosenChara;
     },
     permissionCheck:function(user,action){
-        var result = false;
+        //TODO:更改设计
+        var result = true;
+
         switch (action){
             case "startGame":
                 result = _canStartGame(user);
@@ -91,6 +95,7 @@ userManager.prototype = {
         }
 
         room.roomMem.push(user);
+        user.room = room;
         user.state = "waitingQueue";
         return true;
     },

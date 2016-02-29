@@ -87,7 +87,6 @@ roomManager.prototype = {
      * @param {baPlayer}
      */
     clientRoomInfoInitialize: function (user) {
-
         var roomInfoList = [];
         for(var i = 0;i<roomList.length;i++){
             var room_i = roomList[i];
@@ -103,7 +102,6 @@ roomManager.prototype = {
      * @param room
      */
     startGame:function(room){
-
         var memInfo = _getMemInfo(room);
 
         var roomLeader = room.roomLeader;

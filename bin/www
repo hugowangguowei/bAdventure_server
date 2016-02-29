@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 var debug = require('debug')('qx-chat');
 var app = require('../app');
-var roomManager = require('../basicFunc/roomManager');
-var userManager = require('../basicFunc/userManager');
+//var roomManager = require('../basicFunc/roomManager');
+//var userManager = require('../basicFunc/userManager');
 
 app.set('port', process.env.PORT || 3000);
 

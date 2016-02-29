@@ -86,5 +86,17 @@ baRoom.prototype = {
             leaderInfo:leaderInfo,
             memInfo:memInfo
         }
+    },
+    broadcastMsg:function(msgName,msg){
+        var roomLeader = this.roomLeader;
+        var rlSocket = roomLeader.socket;
+        rlSocket.emit(msgName,msg);
+
+        var roomMemList = this.roomMem;
+        for(var i = 0;i<roomMemList.length;i++){
+            var mem_i = roomMemList[i];
+            var memSocket = mem_i.socket;
+            memSocket.emit(msgName,msg);
+        }
     }
 }

@@ -14,22 +14,45 @@ var userManager = require('../../basicFunc/userManager');
 var rM = new roomManager();
 var uM = new userManager();
 
-var CLIENT_MSG_TYPE = {
+/**
+ * 服务端接收消息名称
+ * @type {}
+ */
+var CMT = {
     DISCONNECT:'disconnect',
     BASIC_CONNECT:'basicConnect',
     ASK_GET_INTO_ROOM:'askGetIntoRoom',
     CREATE_NEW_ROOM:'createNewRoom',
     START_GAME:'startGame',
-    CLIENT_INPUT:'clientInput',
+    CLIENT_SUBMIT:'clientSubmit',
     ROLL:'roll'
 }
+exports.CLIENT_MSG_TYPE = CMT;
+
+/**
+ * 服务端发送消息名称
+ * @constructor
+ */
+var SMT = {
+    SYSTEM_INFORM : "system_inform",
+    BASIC_CONNECT_RETURN : "basicConnectReturn",
+    ROOM_LIST_REFRESH : 'roomListRefresh',
+    INTO_A_ROOM : 'intoARoom',
+    CLIENT_ROOM_INFO_INITIALIZE : 'clientRoomInfoInitialize',
+    GET_OUT_THE_ROOM : 'getOutTheRoom',
+    START_GAME : 'startGame',
+    CLIENT_MSG_DISTRIBUTE:'clientMsgDistribute'
+}
+exports.SERVER_MSG_TYPE = SMT;
 
 exports.clientHandle = function(){
     return [
-        {msgName:CLIENT_MSG_TYPE.DISCONNECT,msgFunc:function(){
+        //断开连接
+        {msgName:CMT.DISCONNECT,msgFunc:function(){
             console.log(this.id + ":disconnected");
         }},
-        {msgName:CLIENT_MSG_TYPE.BASIC_CONNECT,msgFunc:function(cd){
+        //请求连接服务器
+        {msgName:CMT.BASIC_CONNECT,msgFunc:function(cd){
             console.log(cd.userName + " get In");
 
             _basicConnect(this);
@@ -43,7 +66,8 @@ exports.clientHandle = function(){
                 rM.clientRoomInfoInitialize(chara);
             }
         }},
-        {msgName:CLIENT_MSG_TYPE.ASK_GET_INTO_ROOM,msgFunc:function (roomID) {
+        //请求进入房间
+        {msgName:CMT.ASK_GET_INTO_ROOM,msgFunc:function (roomID) {
             console.log("ask get into room");
 
             _getIntoRoom(this);
@@ -57,7 +81,8 @@ exports.clientHandle = function(){
                 }
             }
         }},
-        {msgName:CLIENT_MSG_TYPE.CREATE_NEW_ROOM,msgFunc:function (roomInfo) {
+        //请求创建新房间
+        {msgName:CMT.CREATE_NEW_ROOM,msgFunc:function (roomInfo) {
             console.log("createNewRoom");
 
             _createNewRoom(this);
@@ -70,38 +95,45 @@ exports.clientHandle = function(){
                 uM.sendCurRoomInfo(chara,room);
             }
         }},
-        {msgName:CLIENT_MSG_TYPE.START_GAME,msgFunc:function(){
+        //请求开始游戏
+        {msgName:CMT.START_GAME,msgFunc:function(){
             console.log("startGame");
             _startGame(this);
 
             function _startGame(_socket){
                 var chara = uM.getUserBySocketId(_socket.id);
-                if(!uM.permissionCheck(chara,"startGame")){
+                if(!uM.permissionCheck(chara,CMT.START_GAME)){
                     return 0;
                 }
                 var room = chara.room;
                 rM.startGame(room);
             }
         }},
-        {msgName:CLIENT_MSG_TYPE.CLIENT_INPUT,msgFunc:function(){
+        //客户端文字输入
+        {msgName:CMT.CLIENT_SUBMIT,msgFunc:function(clientSubmit){
+            console.log("clientSubmit");
+            _clientSubmit(this);
 
+            function _clientSubmit(_socket){
+                var chara = uM.getUserBySocketId(_socket.id);
+                if(!uM.permissionCheck(chara,CMT.CLIENT_SUBMIT)){
+                    return 0;
+                }
+                var value = chara.userName + ":" + clientSubmit;
+                console.log(value);
+                var room = chara.room;
+                console.log(room);
+                //TODO :client数据无法提交
+                room.broadcastMsg(SMT.CLIENT_MSG_DISTRIBUTE,value);
+            }
         }},
-        {msgName:CLIENT_MSG_TYPE.ROLL,msgFunc:function(){
+        {msgName:"test",msgFunc:function(msg){
+           console.log("test");
+        }},
+        //客户端ROLL点
+        {msgName:CMT.ROLL,msgFunc:function(){
 
         }}
     ];
 }
 
-/**
- * 服务端接收消息名称
- * @constructor
- */
-var SERVER_MSG_TYPE = {
-    SYSTEM_INFORM : "system_inform",
-    BASIC_CONNECT_RETURN : "basicConnectReturn",
-    ROOM_LIST_REFRESH : 'roomListRefresh',
-    INTO_A_ROOM : 'intoARoom',
-    CLIENT_ROOM_INFO_INITIALIZE : 'clientRoomInfoInitialize',
-    GET_OUT_THE_ROOM : 'getOutTheRoom',
-    START_GAME : 'startGame'
-}
