@@ -50,6 +50,21 @@ exports.clientHandle = function(){
         //断开连接
         {msgName:CMT.DISCONNECT,msgFunc:function(){
             console.log(this.id + ":disconnected");
+            _disconnect(this);
+
+            function _disconnect(_socket){
+                var chara = uM.getUserBySocketId(_socket.id);
+                var room = chara.room;
+                if(!room){
+                    return 0;
+                }else{
+                    if(chara.isRoomLeader()){
+                        uM.leaderLeft(chara);
+                    }else{
+                        uM.kickUserOutRoom(chara);
+                    }
+                }
+            };
         }},
         //请求连接服务器
         {msgName:CMT.BASIC_CONNECT,msgFunc:function(cd){
@@ -73,11 +88,16 @@ exports.clientHandle = function(){
             _getIntoRoom(this);
             function _getIntoRoom(_socket){
                 var chara = uM.getUserBySocketId(_socket.id);
-                uM.kickUserOutRoom(chara);
 
-                var room = rM.getRoomById(roomID);
-                if(uM.joinTheRoom(chara,room)){
-                    rM.roomRefresh(room);
+                var oriRoom = chara.room;
+                if(oriRoom){
+                    uM.kickUserOutRoom(chara);
+                    rM.roomRefresh(oriRoom);
+                }
+
+                var newRoom = rM.getRoomById(roomID);
+                if(uM.joinTheRoom(chara,newRoom)){
+                    rM.roomRefresh(newRoom);
                 }
             }
         }},
@@ -120,10 +140,7 @@ exports.clientHandle = function(){
                     return 0;
                 }
                 var value = chara.userName + ":" + clientSubmit;
-                console.log(value);
                 var room = chara.room;
-                console.log(room);
-                //TODO :client数据无法提交
                 room.broadcastMsg(SMT.CLIENT_MSG_DISTRIBUTE,value);
             }
         }},

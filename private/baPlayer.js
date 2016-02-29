@@ -21,5 +21,19 @@ baPlayer.prototype = {
             serverId:this.userID,
             level:this.level
         }
+    },
+    /**
+     * 判断是否是房间领主
+     * @returns {boolean}
+     */
+    isRoomLeader:function(){
+        if(!this.room){
+            return false;
+        }
+        if(this.room.roomLeader.userID == this.userID){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

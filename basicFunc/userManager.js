@@ -107,13 +107,14 @@ userManager.prototype = {
         if(!room||!room.id){
             return 0;
         }
-        var removeResult = room.removeChara(user);
-        if(removeResult){
-            //rM.roomRefresh(room);
-        }
 
+        room.removeChara(user);
         var socket = user.socket;
         socket.emit("getOutTheRoom");
+    },
+    leaderLeft:function(chara){
+        var room = chara.room;
+
     },
     sendCurRoomInfo:function(user,room){
         var roomInitInfo = room.getRoomInitInfo();
