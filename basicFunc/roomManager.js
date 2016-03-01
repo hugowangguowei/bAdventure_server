@@ -55,13 +55,14 @@ roomManager.prototype = {
      * @param room
      */
     deleteRoom:function(room){
+        //TODO
         var leader = room.roomLeader;
-        leader.getOutRoom();
+        //leader.getOutRoom();
 
         var roomMem = room.roomMem;
         for(var i = 0;i<roomMem.length;i++){
             var mem_i = roomMem[i];
-            mem_i.getOutRoom();
+            //mem_i.getOutRoom();
         }
 
         var roomInfo = room.getBriefInfo();

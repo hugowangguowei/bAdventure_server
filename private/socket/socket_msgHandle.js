@@ -30,7 +30,7 @@ exports.clientHandle = function(){
                         rM.deleteRoom(chara.room);
                     }else{
                         //if()
-                        uM.kickUserOutRoom(chara);
+                        //uM.kickUserOutRoom(chara);
                         rM.roomRefresh(chara.room);
                     }
                 }
@@ -66,13 +66,10 @@ exports.clientHandle = function(){
                 }
 
                 var newRoom = rM.getRoomById(roomID);
-
+                console.log(newRoom);
                 if(newRoom.addChara(chara)){
                     rM.roomRefresh(newRoom);
                 }
-                //if(uM.joinTheRoom(chara,newRoom)){
-                //    rM.roomRefresh(newRoom);
-                //}
             }
         }},
         //请求创建新房间
@@ -82,11 +79,8 @@ exports.clientHandle = function(){
             _createNewRoom(this);
             function _createNewRoom(_socket){
                 var chara = uM.getUserBySocketId(_socket.id);
-                if(!chara){
-                    return 0;
-                }
                 var room = rM.addRoom(roomInfo,chara);
-                uM.sendCurRoomInfo(chara,room);
+                rM.roomRefresh(room);
             }
         }},
         //请求开始游戏

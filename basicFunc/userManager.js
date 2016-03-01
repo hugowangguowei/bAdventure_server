@@ -81,7 +81,6 @@ userManager.prototype = {
             return false;
         }
     },
-
     sendCurRoomInfo:function(user,room){
         var roomInitInfo = room.getRoomInitInfo();
         roomInitInfo['yourInfo'] = {

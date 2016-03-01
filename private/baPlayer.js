@@ -47,6 +47,18 @@ baPlayer.prototype = {
             return false;
         }
     },
+    /**
+     * 进入房间等待队列
+     * @param detail
+     */
+    getIntoQueue:function(room){
+        this.room = room;
+        this.state = playerState.WAITING_QUEUE;
+    },
+    /**
+     * 离开当前的队列
+     * @param detail
+     */
     getOutQueue:function(detail){
         this.state = playerState.MAIN_TABLE;
         this.sendInfo(SMT.GET_OUT_THE_QUEUE,detail);

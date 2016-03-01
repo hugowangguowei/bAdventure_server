@@ -25,7 +25,7 @@ function baRoom(roomID,roomName,maxMem){
 baRoom.prototype = {
     addLeader:function(chara){
         this.roomLeader = chara;
-        chara.room = this;
+        chara.getIntoQueue(this);
     },
     addChara:function(chara){
 
@@ -34,10 +34,8 @@ baRoom.prototype = {
         if(curMemNum >= maxMemNum){
             return false;
         }
-
         this.roomMem.push(chara);
-        chara.room = this;
-        chara.state = "waitingQueue";
+        chara.getIntoQueue(this);
         return true;
     },
     removeChara: function (chara) {
