@@ -4,7 +4,7 @@
 
 var userIdCount = 0;
 var userList =[];
-var socket_config = require('../private/socket/socket_msgHandle');
+var SMT = require('../private/socket/socket_msgDefine').SERVER_MSG_TYPE;
 
 module.exports = userManager;
 
@@ -82,38 +82,11 @@ userManager.prototype = {
         }
     },
 
-    joinTheRoom:function(user,room){
-        if(!user||!room){
-            return false;
-        }
-        var curMemNum = room.roomMem.length;
-        var maxMemNum = room.maxMemNum;
-
-        if(curMemNum >= maxMemNum){
-            return false;
-        }
-
-        room.roomMem.push(user);
-        user.room = room;
-        user.state = "waitingQueue";
-        return true;
-    },
-    kickUserOutRoom:function(user){
-        var room = user.room;
-        if(!room||!room.id){
-            return 0;
-        }
-
-        room.removeChara(user);
-        var socket = user.socket;
-        socket.emit("getOutTheRoom");
-    },
     sendCurRoomInfo:function(user,room){
         var roomInitInfo = room.getRoomInitInfo();
         roomInitInfo['yourInfo'] = {
             yourID:user.userID
         }
-
         var userType;
         if(room.roomLeader.userID ==user.userID){
             userType = "leader";
@@ -121,7 +94,7 @@ userManager.prototype = {
             userType = "normalMem";
         }
         roomInitInfo['userType'] = userType;
-        user.socket.emit('intoARoom',roomInitInfo);
+        user.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
     },
 }
 

@@ -5,6 +5,7 @@
 var baRoom = require('../private/baRoom');
 var serverMethod = require('../private/method/server_method');
 var userManager = require('./userManager');
+var SMT = require("../private/socket/socket_msgDefine").SERVER_MSG_TYPE;
 
 
 var roomIdCount = 0;
@@ -45,9 +46,7 @@ roomManager.prototype = {
         var roomID = this.getIdForNewRoom();
         var room = new baRoom(roomID,roomInfo.name,roomInfo.memNum);
         roomList.push(room);
-
         room.addLeader(user);
-
         this.roomIntroRefresh(room);
         return room;
     },
@@ -57,7 +56,17 @@ roomManager.prototype = {
      */
     deleteRoom:function(room){
         var leader = room.roomLeader;
-        leader.sendInfo()
+        leader.getOutRoom();
+
+        var roomMem = room.roomMem;
+        for(var i = 0;i<roomMem.length;i++){
+            var mem_i = roomMem[i];
+            mem_i.getOutRoom();
+        }
+
+        var roomInfo = room.getBriefInfo();
+        var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
+        serverMethod.broadcastToList(objCharaList,SMT.ROOM_DELETE,roomInfo);
     },
     /**
      * 房间更新
@@ -74,7 +83,7 @@ roomManager.prototype = {
     roomIntroRefresh:function(room){
         var info = room.getBriefInfo();
         var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
-        serverMethod.broadcastToList(objCharaList,'roomListRefresh',info);
+        serverMethod.broadcastToList(objCharaList,SMT.ROOM_LIST_REFRESH,info);
     },
     /**
      * 房间成员更新

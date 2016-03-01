@@ -29,6 +29,7 @@ exports.clientHandle = function(){
                     if(chara.isRoomLeader()){
                         rM.deleteRoom(chara.room);
                     }else{
+                        //if()
                         uM.kickUserOutRoom(chara);
                         rM.roomRefresh(chara.room);
                     }
@@ -60,14 +61,18 @@ exports.clientHandle = function(){
 
                 var oriRoom = chara.room;
                 if(oriRoom){
-                    uM.kickUserOutRoom(chara);
+                    oriRoom.removeChara(chara);
                     rM.roomRefresh(oriRoom);
                 }
 
                 var newRoom = rM.getRoomById(roomID);
-                if(uM.joinTheRoom(chara,newRoom)){
+
+                if(newRoom.addChara(chara)){
                     rM.roomRefresh(newRoom);
                 }
+                //if(uM.joinTheRoom(chara,newRoom)){
+                //    rM.roomRefresh(newRoom);
+                //}
             }
         }},
         //请求创建新房间

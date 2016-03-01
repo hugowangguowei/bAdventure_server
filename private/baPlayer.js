@@ -3,13 +3,20 @@
  */
 
 module.exports = baPlayer;
+var SMT = require('./socket/socket_msgDefine').SERVER_MSG_TYPE;
+
+var playerState = {
+    MAIN_TABLE:"mainTable",
+    WAITING_QUEUE:"waitingQueue",
+    GAME:"game"
+}
 
 function baPlayer(userName,id,socket){
 
     this.userName = userName;
     this.userID = id;
     this.level = 0;
-    this.state = "mainTable";
+    this.state = playerState.MAIN_TABLE;
     this.socket = socket;
     this.room = null;
 }
@@ -39,6 +46,17 @@ baPlayer.prototype = {
         }else{
             return false;
         }
+    },
+    getOutQueue:function(detail){
+        this.state = playerState.MAIN_TABLE;
+        this.sendInfo(SMT.GET_OUT_THE_QUEUE,detail);
+    },
+    /**
+     * 离开当前所在的游戏
+     */
+    getOutGame:function(detail){
+        this.state = playerState.MAIN_TABLE;
+        this.sendInfo(SMT.GET_OUT_THE_GAME,detail);
     },
     /**
      * 发送消息

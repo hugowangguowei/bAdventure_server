@@ -4,14 +4,22 @@
 
 module.exports = baRoom;
 
+/**
+ * 房间当前的状态
+ * @type {{WAITING: string, IN_GAME: string}}
+ */
+var roomState = {
+    WAITING:"waiting",
+    IN_GAME:"inGame"
+}
+
 function baRoom(roomID,roomName,maxMem){
     this.id = roomID;
     this.name = roomName;
     this.maxMemNum = maxMem||2;
     this.roomLeader = 0;
     this.roomMem = [];
-
-    this.roomIsReady = true;
+    this.roomState = roomState.WAITING;
 }
 
 baRoom.prototype = {
@@ -20,26 +28,46 @@ baRoom.prototype = {
         chara.room = this;
     },
     addChara:function(chara){
+
+        var curMemNum = this.roomMem.length;
+        var maxMemNum = this.maxMemNum;
+        if(curMemNum >= maxMemNum){
+            return false;
+        }
+
         this.roomMem.push(chara);
         chara.room = this;
+        chara.state = "waitingQueue";
+        return true;
     },
     removeChara: function (chara) {
-        for(var i = 0;i<this.roomMem.length;i++){
-            var chara_i = this.roomMem[i];
+        var self = this;
+
+        for(var i = 0;i<self.roomMem.length;i++){
+            var chara_i = self.roomMem[i];
             if(chara_i.userID == chara.userID){
                 chara_i.room = 0;
-                this.roomMem.splice(i,1);
+                self.roomMem.splice(i,1);
                 return true;
             }
         }
-        return false;
+
+        switch (this.roomState){
+            case roomState.WAITING:
+                chara.getOutQueue();
+                break;
+            case roomState.IN_GAME:
+                chara.getOutGame();
+                break;
+        }
     },
     getBriefInfo: function () {
         var roomInfo ={
             roomName:this.name,
             serverID:this.id,
             roomMaxMem:this.maxMemNum,
-            roomCurMem:this.roomMem.length
+            roomCurMem:this.roomMem.length,
+            roomState:this.roomState
         }
 
         var leaderIntro = {

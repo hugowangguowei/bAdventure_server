@@ -25,10 +25,19 @@ var SMT = {
     SYSTEM_INFORM : "system_inform",
     BASIC_CONNECT_RETURN : "basicConnectReturn",
     ROOM_LIST_REFRESH : 'roomListRefresh',
+    //进入房间
     INTO_A_ROOM : 'intoARoom',
+    //客户端房间信息初始化
     CLIENT_ROOM_INFO_INITIALIZE : 'clientRoomInfoInitialize',
-    GET_OUT_THE_ROOM : 'getOutTheRoom',
+    //离开等待队列
+    GET_OUT_THE_QUEUE : 'getOutTheQueue',
+    //离开游戏
+    GET_OUT_THE_GAME: 'getOutTheGame',
+    //开始游戏
     START_GAME : 'startGame',
-    CLIENT_MSG_DISTRIBUTE:'clientMsgDistribute'
+    //用户提交的信息分发
+    CLIENT_MSG_DISTRIBUTE:'clientMsgDistribute',
+    //当前的房间被删除
+    ROOM_DELETE:'roomDelete'
 }
 exports.SERVER_MSG_TYPE = SMT;
