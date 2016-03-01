@@ -52,6 +52,14 @@ roomManager.prototype = {
         return room;
     },
     /**
+     * 删除房间
+     * @param room
+     */
+    deleteRoom:function(room){
+        var leader = room.roomLeader;
+        leader.sendInfo()
+    },
+    /**
      * 房间更新
      * @param room
      */

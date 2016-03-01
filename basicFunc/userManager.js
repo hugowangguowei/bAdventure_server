@@ -4,8 +4,7 @@
 
 var userIdCount = 0;
 var userList =[];
-var socket_config = require('../private/socket/socket_config');
-//var CLIENT_MSG_TYPE = socket_config.CLIENT_MSG_TYPE;
+var socket_config = require('../private/socket/socket_msgHandle');
 
 module.exports = userManager;
 
@@ -100,9 +99,6 @@ userManager.prototype = {
         return true;
     },
     kickUserOutRoom:function(user){
-        if(!user){
-            return 0;
-        }
         var room = user.room;
         if(!room||!room.id){
             return 0;
@@ -111,10 +107,6 @@ userManager.prototype = {
         room.removeChara(user);
         var socket = user.socket;
         socket.emit("getOutTheRoom");
-    },
-    leaderLeft:function(chara){
-        var room = chara.room;
-
     },
     sendCurRoomInfo:function(user,room){
         var roomInitInfo = room.getRoomInitInfo();

@@ -15,6 +15,10 @@ function baPlayer(userName,id,socket){
 }
 
 baPlayer.prototype = {
+    /**
+     * 获取player信息
+     * @returns {{name: *, serverId: *, level: *}}
+     */
     getPlayerInfo:function(){
         return {
             name:this.userName,
@@ -35,5 +39,13 @@ baPlayer.prototype = {
         }else{
             return false;
         }
+    },
+    /**
+     * 发送消息
+     * @param msgName
+     * @param msg
+     */
+    sendInfo:function(msgName,msg){
+        this.socket.emit(msgName,msg);
     }
 }

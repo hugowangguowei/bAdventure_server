@@ -5,8 +5,7 @@
 var io = require('socket.io')();
 
 var xssEscape = require('xss-escape');
-var socket_config = require('./private/socket/socket_config');
-var clientHandle = socket_config.clientHandle();
+var clientHandle = require('./private/socket/socket_msgHandle').clientHandle();
 
 io.on('connection',function(_socket){
     console.log(_socket.id + ":connected");
