@@ -4,6 +4,10 @@
 
 module.exports = baRoom;
 
+var userManager = require("./basicFunc/userManager");
+var serverMethod = require("./method/server_method");
+var SMT = require("./socket/socket_msgDefine").SERVER_MSG_TYPE;
+var uM = new userManager();
 /**
  * 房间当前的状态
  * @type {{WAITING: string, IN_GAME: string}}
@@ -12,6 +16,8 @@ var roomState = {
     WAITING:"waiting",
     IN_GAME:"inGame"
 }
+
+
 
 function baRoom(roomID,roomName,maxMem){
     this.id = roomID;
@@ -111,6 +117,54 @@ baRoom.prototype = {
         return{
             leaderInfo:leaderInfo,
             memInfo:memInfo
+        }
+    },
+    roomRefresh:function(){
+        this.roomIntroRefresh();
+        this.roomMemRefresh();
+    },
+    roomIntroRefresh:function(){
+    var info = this.getBriefInfo();
+    var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
+    serverMethod.broadcastToList(objCharaList,SMT.ROOM_LIST_REFRESH,info);
+},
+    roomMemRefresh:function(){
+    var roomInitInfo = this.getRoomInitInfo();
+    var roomLeader = this.roomLeader;
+    roomLeader.sendCurRoomInfo(roomInitInfo);
+
+    var roomMemList = this.roomMem;
+    for(var i = 0;i<roomMemList.length;i++){
+        var mem_i = roomMemList[i];
+        mem_i.sendCurRoomInfo(roomInitInfo);
+    }
+},
+    /**
+     * 开始游戏
+     * @param room
+     */
+    startGame:function(){
+        var self = this;
+        var memInfo = _getMemInfo();
+
+        var roomLeader = this.roomLeader;
+        roomLeader.sendInfo("startGame",{playerType:"leader",mem:memInfo});
+
+        var roomMemList = this.roomMem;
+        for(var i = 0;i<roomMemList.length;i++){
+            var mem_i = roomMemList[i];
+            mem_i.sendInfo("startGame",{playerType:"normal",mem:memInfo});
+        }
+
+        function _getMemInfo(){
+            var info = [];
+            var roomMemList = self.roomMem;
+            for(var i =0;i< roomMemList.length;i++){
+                var player_i = roomMemList[i];
+                var info_i = player_i.getPlayerInfo();
+                info.push(info_i);
+            }
+            return info;
         }
     },
     broadcastMsg:function(msgName,msg){

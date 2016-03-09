@@ -71,11 +71,29 @@ baPlayer.prototype = {
         this.sendInfo(SMT.GET_OUT_THE_GAME,detail);
     },
     /**
+     * 发送当前房间的消息
+     * @param roomInitInfo
+     */
+    sendCurRoomInfo:function(roomInitInfo){
+        roomInitInfo['yourInfo'] = {
+            yourID:this.userID
+        }
+        var userType;
+        if(this.room.roomLeader.userID ==this.userID){
+            userType = "leader";
+        }else{
+            userType = "normalMem";
+        }
+        roomInitInfo['userType'] = userType;
+        this.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
+    },
+    /**
      * 发送消息
      * @param msgName
      * @param msg
      */
     sendInfo:function(msgName,msg){
         this.socket.emit(msgName,msg);
-    }
+    },
+
 }

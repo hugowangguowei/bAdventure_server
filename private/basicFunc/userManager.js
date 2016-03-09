@@ -4,7 +4,7 @@
 
 var userIdCount = 0;
 var userList =[];
-var SMT = require('../private/socket/socket_msgDefine').SERVER_MSG_TYPE;
+var SMT = require('../socket/socket_msgDefine').SERVER_MSG_TYPE;
 
 module.exports = userManager;
 
@@ -80,20 +80,6 @@ userManager.prototype = {
             }
             return false;
         }
-    },
-    sendCurRoomInfo:function(user,room){
-        var roomInitInfo = room.getRoomInitInfo();
-        roomInitInfo['yourInfo'] = {
-            yourID:user.userID
-        }
-        var userType;
-        if(room.roomLeader.userID ==user.userID){
-            userType = "leader";
-        }else{
-            userType = "normalMem";
-        }
-        roomInitInfo['userType'] = userType;
-        user.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
     },
 }
 

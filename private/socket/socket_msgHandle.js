@@ -5,8 +5,8 @@
 
 
 var baPlayer = require('../baPlayer');
-var roomManager = require('../../basicFunc/roomManager');
-var userManager = require('../../basicFunc/userManager');
+var roomManager = require('../basicFunc/roomManager');
+var userManager = require('../basicFunc/userManager');
 var CMT = require('./socket_msgDefine').CLIENT_MSG_TYPE;
 var SMT = require('./socket_msgDefine').SERVER_MSG_TYPE;
 
@@ -31,7 +31,8 @@ exports.clientHandle = function(){
                     }else{
                         //if()
                         //uM.kickUserOutRoom(chara);
-                        rM.roomRefresh(chara.room);
+                        chara.room.roomRefresh();
+                        //rM.roomRefresh(chara.room);
                     }
                 }
             };
@@ -66,9 +67,10 @@ exports.clientHandle = function(){
                 }
 
                 var newRoom = rM.getRoomById(roomID);
-                console.log(newRoom);
+                //console.log(newRoom);
                 if(newRoom.addChara(chara)){
-                    rM.roomRefresh(newRoom);
+                    //rM.roomRefresh(newRoom);
+                    newRoom.roomRefresh();
                 }
             }
         }},
@@ -80,7 +82,7 @@ exports.clientHandle = function(){
             function _createNewRoom(_socket){
                 var chara = uM.getUserBySocketId(_socket.id);
                 var room = rM.addRoom(roomInfo,chara);
-                rM.roomRefresh(room);
+                room.roomRefresh();
             }
         }},
         //请求开始游戏
@@ -93,8 +95,7 @@ exports.clientHandle = function(){
                 if(!uM.permissionCheck(chara,CMT.START_GAME)){
                     return 0;
                 }
-                var room = chara.room;
-                rM.startGame(room);
+                chara.room.startGame();
             }
         }},
         //客户端文字输入
