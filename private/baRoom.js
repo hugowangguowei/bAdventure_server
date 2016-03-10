@@ -119,37 +119,47 @@ baRoom.prototype = {
             memInfo:memInfo
         }
     },
+    /**
+     * 房间更新
+     */
     roomRefresh:function(){
         this.roomIntroRefresh();
         this.roomMemRefresh();
     },
+    /**
+     * 房间简介列表更新
+     */
     roomIntroRefresh:function(){
-    var info = this.getBriefInfo();
-    var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
-    serverMethod.broadcastToList(objCharaList,SMT.ROOM_LIST_REFRESH,info);
-},
+        var info = this.getBriefInfo();
+        var objCharaList = uM.getUsersByStateType(["mainTable","waitingQueue"]);
+        serverMethod.broadcastToList(objCharaList,SMT.ROOM_LIST_REFRESH,info);
+    },
+    /**
+     * 房间内成员更新
+     */
     roomMemRefresh:function(){
-    var roomInitInfo = this.getRoomInitInfo();
-    var roomLeader = this.roomLeader;
-    roomLeader.sendCurRoomInfo(roomInitInfo);
+        var roomInitInfo = this.getRoomInitInfo();
+        var roomLeader = this.roomLeader;
+        roomLeader.sendCurRoomInfo(roomInitInfo);
 
-    var roomMemList = this.roomMem;
-    for(var i = 0;i<roomMemList.length;i++){
-        var mem_i = roomMemList[i];
-        mem_i.sendCurRoomInfo(roomInitInfo);
-    }
-},
+        var roomMemList = this.roomMem;
+        for(var i = 0;i<roomMemList.length;i++){
+            var mem_i = roomMemList[i];
+            mem_i.sendCurRoomInfo(roomInitInfo);
+        }
+    },
     /**
      * 开始游戏
      * @param room
      */
     startGame:function(){
         var self = this;
-        var memInfo = _getMemInfo();
+        self.roomState = roomState.IN_GAME;
+        this.roomIntroRefresh();
 
+        var memInfo = _getMemInfo();
         var roomLeader = this.roomLeader;
         roomLeader.sendInfo("startGame",{playerType:"leader",mem:memInfo});
-
         var roomMemList = this.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
@@ -166,7 +176,13 @@ baRoom.prototype = {
             }
             return info;
         }
+
     },
+    /**
+     * 房间内信息广播
+     * @param msgName
+     * @param msg
+     */
     broadcastMsg:function(msgName,msg){
         var roomLeader = this.roomLeader;
         var rlSocket = roomLeader.socket;

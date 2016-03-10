@@ -113,6 +113,7 @@ exports.clientHandle = function(){
                 room.broadcastMsg(SMT.CLIENT_MSG_DISTRIBUTE,value);
             }
         }},
+        //≤‚ ‘–≈œ¢
         {msgName:"test",msgFunc:function(msg){
            console.log("test");
         }},
