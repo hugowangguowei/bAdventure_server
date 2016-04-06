@@ -47,7 +47,8 @@ roomManager.prototype = {
         var room = new baRoom(roomID,roomInfo.name,roomInfo.memNum);
         roomList.push(room);
         room.addLeader(user);
-        room.roomIntroRefresh();
+        //TODO 在创建房间后不需要自动更新？存疑
+        //room.roomIntroRefresh();
         return room;
     },
     /**

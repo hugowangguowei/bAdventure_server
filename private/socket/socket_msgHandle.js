@@ -77,8 +77,8 @@ exports.clientHandle = function(){
         //请求创建新房间
         {msgName:CMT.CREATE_NEW_ROOM,msgFunc:function (roomInfo) {
             console.log("createNewRoom");
-
             _createNewRoom(this);
+
             function _createNewRoom(_socket){
                 var chara = uM.getUserBySocketId(_socket.id);
                 var room = rM.addRoom(roomInfo,chara);

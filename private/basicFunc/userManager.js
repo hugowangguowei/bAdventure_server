@@ -33,7 +33,6 @@ userManager.prototype = {
     getUsersByStateType:function(state){
         var chosenChara = [];
         var chara_i;
-
         if(typeof state == 'string'){
             for(var i =0;i<userList.length;i++){
                 chara_i = userList[i];
