@@ -75,17 +75,6 @@ baPlayer.prototype = {
      * @param roomInitInfo
      */
     sendCurRoomInfo:function(roomInitInfo){
-        roomInitInfo['yourInfo'] = {
-            yourID:this.userID
-        }
-        var userType;
-        if(this.room.roomLeader.userID ==this.userID){
-            userType = "leader";
-        }else{
-            userType = "normalMem";
-        }
-        roomInitInfo['userType'] = userType;
-        this.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
     },
     /**
      * ·¢ËÍÏûÏ¢

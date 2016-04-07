@@ -95,13 +95,12 @@ baRoom.prototype = {
             memIntro:memIntro
         }
     },
-    getRoomInitInfo:function(){
+    getWaitingQueueInfo:function(){
         var leaderInfo = {
             userName:this.roomLeader.userName,
             level:this.roomLeader.level,
             serverID:this.roomLeader.userID
         }
-
         var memInfo = [];
         for(var i =0;i<this.roomMem.length;i++){
             var memInfo_i;
@@ -123,8 +122,14 @@ baRoom.prototype = {
      * 房间更新
      */
     roomRefresh:function(){
-        this.roomIntroRefresh();
-        this.roomMemRefresh();
+        switch (this.roomState){
+            case roomState.WAITING:
+                this.roomIntroRefresh();
+                this.waitingQueueRefresh();
+                break;
+            case roomState.IN_GAME:
+                break;
+        }
     },
     /**
      * 房间简介列表更新
@@ -135,18 +140,39 @@ baRoom.prototype = {
         serverMethod.broadcastToList(objCharaList,SMT.ROOM_LIST_REFRESH,info);
     },
     /**
-     * 房间内成员更新
+     * 排队列表更新
      */
-    roomMemRefresh:function(){
-        var roomInitInfo = this.getRoomInitInfo();
+    waitingQueueRefresh:function(){
+        //roomInitInfo['yourInfo'] = {
+        //    yourID:this.userID
+        //}
+        //var userType;
+        //if(this.room.roomLeader.userID ==this.userID){
+        //    userType = "leader";
+        //}else{
+        //    userType = "normalMem";
+        //}
+        //roomInitInfo['userType'] = userType;
+        //this.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
+        var roomInitInfo = this.getWaitingQueueInfo();
         var roomLeader = this.roomLeader;
-        roomLeader.sendCurRoomInfo(roomInitInfo);
+        roomInitInfo['yourInfo'] = {yourID:roomLeader.userID};
+        roomInitInfo['userType'] = "leader";
+        roomLeader.sendInfo(SMT.WAITING_QUEUE_REFRESH,roomInitInfo);
 
         var roomMemList = this.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
-            mem_i.sendCurRoomInfo(roomInitInfo);
+            roomInitInfo['yourInfo'] = {yourID:mem_i.userID};
+            roomInitInfo['userType'] = "normalMem";
+            mem_i.sendInfo(SMT.WAITING_QUEUE_REFRESH,roomInitInfo);
         }
+    },
+    /**
+     * 房间内成员更新
+     */
+    roomMemRefresh:function(){
+        //TODO
     },
     /**
      * 开始游戏

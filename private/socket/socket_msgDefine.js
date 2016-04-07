@@ -22,9 +22,14 @@ exports.CLIENT_MSG_TYPE = CMT;
  * @constructor
  */
 var SMT = {
+    //系统通知
     SYSTEM_INFORM : "system_inform",
+    //基本连接返回值
     BASIC_CONNECT_RETURN : "basicConnectReturn",
+    //房间展示列表更新
     ROOM_LIST_REFRESH : 'roomListRefresh',
+    //房间成员更新
+    WAITING_QUEUE_REFRESH: 'waitingQueueRefresh',
     //进入房间
     INTO_A_ROOM : 'intoARoom',
     //客户端房间信息初始化
