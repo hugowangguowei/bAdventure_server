@@ -34,7 +34,6 @@ baRoom.prototype = {
         chara.getIntoQueue(this);
     },
     addChara:function(chara){
-
         var curMemNum = this.roomMem.length;
         var maxMemNum = this.maxMemNum;
         if(curMemNum >= maxMemNum){

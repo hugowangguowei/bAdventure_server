@@ -69,7 +69,6 @@ exports.clientHandle = function(){
                 var newRoom = rM.getRoomById(roomID);
                 //console.log(newRoom);
                 if(newRoom.addChara(chara)){
-                    //rM.roomRefresh(newRoom);
                     newRoom.roomRefresh();
                 }
             }
