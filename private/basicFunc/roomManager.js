@@ -42,9 +42,8 @@ roomManager.prototype = {
      * @returns {baRoom|exports|module.exports}
      */
     addRoom:function(roomInfo,user){
-
         var roomID = this.getIdForNewRoom();
-        var room = new baRoom(roomID,roomInfo.name,roomInfo.memNum);
+        var room = new baRoom(roomID,roomInfo.name,roomInfo.memNum,roomInfo.scriptName);
         roomList.push(room);
         room.addLeader(user);
         //TODO 在创建房间后不需要自动更新？存疑

@@ -19,10 +19,11 @@ var roomState = {
 
 
 
-function baRoom(roomID,roomName,maxMem){
+function baRoom(roomID,roomName,maxMem,scriptName){
     this.id = roomID;
     this.name = roomName;
     this.maxMemNum = maxMem||2;
+    this.scriptName = scriptName;
     this.roomLeader = 0;
     this.roomMem = [];
     this.roomState = roomState.WAITING;
@@ -142,17 +143,6 @@ baRoom.prototype = {
      * 排队列表更新
      */
     waitingQueueRefresh:function(){
-        //roomInitInfo['yourInfo'] = {
-        //    yourID:this.userID
-        //}
-        //var userType;
-        //if(this.room.roomLeader.userID ==this.userID){
-        //    userType = "leader";
-        //}else{
-        //    userType = "normalMem";
-        //}
-        //roomInitInfo['userType'] = userType;
-        //this.sendInfo(SMT.INTO_A_ROOM,roomInitInfo);
         var roomInitInfo = this.getWaitingQueueInfo();
         var roomLeader = this.roomLeader;
         roomInitInfo['yourInfo'] = {yourID:roomLeader.userID};
@@ -184,11 +174,11 @@ baRoom.prototype = {
 
         var memInfo = _getMemInfo();
         var roomLeader = this.roomLeader;
-        roomLeader.sendInfo("startGame",{playerType:"leader",mem:memInfo});
+        roomLeader.sendInfo("startGame",{playerType:"leader",mem:memInfo,script:self.scriptName});
         var roomMemList = this.roomMem;
         for(var i = 0;i<roomMemList.length;i++){
             var mem_i = roomMemList[i];
-            mem_i.sendInfo("startGame",{playerType:"normal",mem:memInfo});
+            mem_i.sendInfo("startGame",{playerType:"normal",mem:memInfo,script:self.scriptName});
         }
 
         function _getMemInfo(){
