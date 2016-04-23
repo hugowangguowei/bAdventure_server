@@ -4,9 +4,9 @@
 
 module.exports = baRoom;
 
-var userManager = require("./basicFunc/userManager");
-var serverMethod = require("./method/server_method");
-var SMT = require("./socket/socket_msgDefine").SERVER_MSG_TYPE;
+var userManager = require("./../controller/userManager");
+var serverMethod = require("./../method/server_method");
+var SMT = require("./../socket/socket_msgDefine").SERVER_MSG_TYPE;
 var uM = new userManager();
 /**
  * 房间当前的状态

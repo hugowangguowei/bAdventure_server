@@ -2,7 +2,7 @@
  * Created by wgw on 2016/2/6.
  */
 
-var baRoom = require('../baRoom');
+var baRoom = require('../model/baRoom');
 var userManager = require('./userManager');
 var serverMethod = require('../method/server_method');
 var SMT = require("../socket/socket_msgDefine").SERVER_MSG_TYPE;

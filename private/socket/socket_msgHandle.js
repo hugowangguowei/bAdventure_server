@@ -4,9 +4,9 @@
 
 
 
-var baPlayer = require('../baPlayer');
-var roomManager = require('../basicFunc/roomManager');
-var userManager = require('../basicFunc/userManager');
+var baPlayer = require('../model/baPlayer');
+var roomManager = require('../controller/roomManager');
+var userManager = require('../controller/userManager');
 var CMT = require('./socket_msgDefine').CLIENT_MSG_TYPE;
 var SMT = require('./socket_msgDefine').SERVER_MSG_TYPE;
 

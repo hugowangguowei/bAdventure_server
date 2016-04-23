@@ -3,7 +3,7 @@
  */
 
 module.exports = baPlayer;
-var SMT = require('./socket/socket_msgDefine').SERVER_MSG_TYPE;
+var SMT = require('./../socket/socket_msgDefine').SERVER_MSG_TYPE;
 
 var playerState = {
     MAIN_TABLE:"mainTable",
